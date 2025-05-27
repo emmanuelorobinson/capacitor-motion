@@ -13,25 +13,151 @@ npx cap sync
 
 <docgen-index>
 
-* [`echo(...)`](#echo)
+* [`addListener('accel', ...)`](#addlisteneraccel-)
+* [`addListener('orientation', ...)`](#addlistenerorientation-)
+* [`removeAllListeners()`](#removealllisteners)
+* [`startMotionUpdates()`](#startmotionupdates)
+* [`stopMotionUpdates()`](#stopmotionupdates)
+* [Interfaces](#interfaces)
+* [Type Aliases](#type-aliases)
 
 </docgen-index>
 
 <docgen-api>
 <!--Update the source file JSDoc comments and rerun docgen to update the docs below-->
 
-### echo(...)
+### addListener('accel', ...)
 
 ```typescript
-echo(options: { value: string; }) => Promise<{ value: string; }>
+addListener(eventName: 'accel', listenerFunc: AccelListener) => Promise<PluginListenerHandle>
 ```
 
-| Param         | Type                            |
-| ------------- | ------------------------------- |
-| **`options`** | <code>{ value: string; }</code> |
+Add a listener for accelerometer data
 
-**Returns:** <code>Promise&lt;{ value: string; }&gt;</code>
+| Param              | Type                                                    |
+| ------------------ | ------------------------------------------------------- |
+| **`eventName`**    | <code>'accel'</code>                                    |
+| **`listenerFunc`** | <code><a href="#accellistener">AccelListener</a></code> |
+
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
+
+**Since:** 1.0.0
 
 --------------------
+
+
+### addListener('orientation', ...)
+
+```typescript
+addListener(eventName: 'orientation', listenerFunc: OrientationListener) => Promise<PluginListenerHandle>
+```
+
+Add a listener for device orientation change (compass heading, etc.)
+
+| Param              | Type                                                                |
+| ------------------ | ------------------------------------------------------------------- |
+| **`eventName`**    | <code>'orientation'</code>                                          |
+| **`listenerFunc`** | <code><a href="#orientationlistener">OrientationListener</a></code> |
+
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
+
+**Since:** 1.0.0
+
+--------------------
+
+
+### removeAllListeners()
+
+```typescript
+removeAllListeners() => Promise<void>
+```
+
+Remove all the listeners that are attached to this plugin.
+
+**Since:** 1.0.0
+
+--------------------
+
+
+### startMotionUpdates()
+
+```typescript
+startMotionUpdates() => Promise<void>
+```
+
+Start motion updates
+
+**Since:** 1.0.0
+
+--------------------
+
+
+### stopMotionUpdates()
+
+```typescript
+stopMotionUpdates() => Promise<void>
+```
+
+Stop motion updates
+
+**Since:** 1.0.0
+
+--------------------
+
+
+### Interfaces
+
+
+#### PluginListenerHandle
+
+| Prop         | Type                                      |
+| ------------ | ----------------------------------------- |
+| **`remove`** | <code>() =&gt; Promise&lt;void&gt;</code> |
+
+
+#### AccelListenerEvent
+
+| Prop                               | Type                                                  | Description                                                                                                                                                             | Since |
+| ---------------------------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| **`acceleration`**                 | <code><a href="#acceleration">Acceleration</a></code> | An object giving the acceleration of the device on the three axis X, Y and Z. <a href="#acceleration">Acceleration</a> is expressed in m/s²                             | 1.0.0 |
+| **`accelerationIncludingGravity`** | <code><a href="#acceleration">Acceleration</a></code> | An object giving the acceleration of the device on the three axis X, Y and Z with the effect of gravity. <a href="#acceleration">Acceleration</a> is expressed in m/s²  | 1.0.0 |
+| **`rotationRate`**                 | <code><a href="#rotationrate">RotationRate</a></code> | An object giving the rate of change of the device's orientation on the three orientation axis alpha, beta and gamma. Rotation rate is expressed in degrees per seconds. | 1.0.0 |
+| **`interval`**                     | <code>number</code>                                   | A number representing the interval of time, in milliseconds, at which data is obtained from the device.                                                                 | 1.0.0 |
+
+
+#### Acceleration
+
+| Prop    | Type                | Description                                  | Since |
+| ------- | ------------------- | -------------------------------------------- | ----- |
+| **`x`** | <code>number</code> | The amount of acceleration along the X axis. | 1.0.0 |
+| **`y`** | <code>number</code> | The amount of acceleration along the Y axis. | 1.0.0 |
+| **`z`** | <code>number</code> | The amount of acceleration along the Z axis. | 1.0.0 |
+
+
+#### RotationRate
+
+| Prop        | Type                | Description                                                      | Since |
+| ----------- | ------------------- | ---------------------------------------------------------------- | ----- |
+| **`alpha`** | <code>number</code> | The amount of rotation around the Z axis, in degrees per second. | 1.0.0 |
+| **`beta`**  | <code>number</code> | The amount of rotation around the X axis, in degrees per second. | 1.0.0 |
+| **`gamma`** | <code>number</code> | The amount of rotation around the Y axis, in degrees per second. | 1.0.0 |
+
+
+### Type Aliases
+
+
+#### AccelListener
+
+<code>(event: <a href="#accellistenerevent">AccelListenerEvent</a>): void</code>
+
+
+#### OrientationListener
+
+<code>(event: <a href="#rotationrate">RotationRate</a>): void</code>
+
+
+#### OrientationListenerEvent
+
+<code><a href="#rotationrate">RotationRate</a></code>
 
 </docgen-api>
