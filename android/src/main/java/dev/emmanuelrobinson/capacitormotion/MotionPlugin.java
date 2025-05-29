@@ -60,6 +60,8 @@ public class MotionPlugin extends Plugin {
             implementation.startAccelerometerUpdates();
         } else if ("orientation".equals(eventName)) {
             implementation.startOrientationUpdates();
+        } else if ("heading".equals(eventName)) {
+            implementation.startHeadingUpdates();
         } else {
             System.out.println("MotionPlugin: Listener registered for unknown event type: " + eventName);
         }

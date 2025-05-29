@@ -22,6 +22,16 @@ export interface MotionPlugin {
   ): Promise<PluginListenerHandle>;
 
   /**
+   * Add a listener for device heading change (compass heading, etc.)
+   *
+   * @since 1.0.0
+   */
+  addListener(
+    eventName: 'heading',
+    listenerFunc: HeadingListener,
+  ): Promise<PluginListenerHandle>;
+
+  /**
    * Remove all the listeners that are attached to this plugin.
    *
    * @since 1.0.0
@@ -46,6 +56,8 @@ export interface MotionPlugin {
 export type AccelListener = (event: AccelListenerEvent) => void;
 export type OrientationListener = (event: OrientationListenerEvent) => void;
 export type OrientationListenerEvent = RotationRate;
+export type HeadingListener = (event: HeadingListenerEvent) => void;
+export type HeadingListenerEvent = Heading;
 
 export interface RotationRate {
   /**
@@ -68,6 +80,15 @@ export interface RotationRate {
    * @since 1.0.0
    */
   gamma: number;
+}
+
+export interface Heading {
+  /**
+   * The heading of the device, in degrees.
+   *
+   * @since 1.0.0
+   */
+  heading: number;
 }
 
 export interface Acceleration {

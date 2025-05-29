@@ -5,7 +5,7 @@ Capacitor Motion is a plugin that provides access to device motion and orientati
 ## Install
 
 ```bash
-npm install capacitor-motion
+npm install native-capacitor-motion
 npx cap sync
 ```
 
@@ -15,6 +15,7 @@ npx cap sync
 
 * [`addListener('accel', ...)`](#addlisteneraccel-)
 * [`addListener('orientation', ...)`](#addlistenerorientation-)
+* [`addListener('heading', ...)`](#addlistenerheading-)
 * [`removeAllListeners()`](#removealllisteners)
 * [`startMotionUpdates()`](#startmotionupdates)
 * [`stopMotionUpdates()`](#stopmotionupdates)
@@ -58,6 +59,26 @@ Add a listener for device orientation change (compass heading, etc.)
 | ------------------ | ------------------------------------------------------------------- |
 | **`eventName`**    | <code>'orientation'</code>                                          |
 | **`listenerFunc`** | <code><a href="#orientationlistener">OrientationListener</a></code> |
+
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
+
+**Since:** 1.0.0
+
+--------------------
+
+
+### addListener('heading', ...)
+
+```typescript
+addListener(eventName: 'heading', listenerFunc: HeadingListener) => Promise<PluginListenerHandle>
+```
+
+Add a listener for device heading change (compass heading, etc.)
+
+| Param              | Type                                                        |
+| ------------------ | ----------------------------------------------------------- |
+| **`eventName`**    | <code>'heading'</code>                                      |
+| **`listenerFunc`** | <code><a href="#headinglistener">HeadingListener</a></code> |
 
 **Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
 
@@ -143,6 +164,13 @@ Stop motion updates
 | **`gamma`** | <code>number</code> | The amount of rotation around the Y axis, in degrees per second. | 1.0.0 |
 
 
+#### Heading
+
+| Prop          | Type                | Description                            | Since |
+| ------------- | ------------------- | -------------------------------------- | ----- |
+| **`heading`** | <code>number</code> | The heading of the device, in degrees. | 1.0.0 |
+
+
 ### Type Aliases
 
 
@@ -159,5 +187,15 @@ Stop motion updates
 #### OrientationListenerEvent
 
 <code><a href="#rotationrate">RotationRate</a></code>
+
+
+#### HeadingListener
+
+<code>(event: <a href="#heading">Heading</a>): void</code>
+
+
+#### HeadingListenerEvent
+
+<code><a href="#heading">Heading</a></code>
 
 </docgen-api>

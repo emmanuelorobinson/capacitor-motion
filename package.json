@@ -1,6 +1,6 @@
 {
   "name": "native-capacitor-motion",
-  "version": "1.0.11",
+  "version": "1.0.13",
   "description": "Capacitor Motion is a plugin that provides access to device motion and orientation data, including accelerometer, gyroscope, and magnetometer readings, for cross-platform mobile apps.",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",

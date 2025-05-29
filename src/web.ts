@@ -1,17 +1,22 @@
 import { WebPlugin } from '@capacitor/core';
-import type { MotionPlugin, AccelListener, OrientationListener } from './definitions';
+import type { MotionPlugin, AccelListener, OrientationListener, HeadingListener } from './definitions';
 
 export class MotionWeb extends WebPlugin implements MotionPlugin {
   private accelListeners: AccelListener[] = [];
   private orientationListeners: OrientationListener[] = [];
+  private headingListeners: HeadingListener[] = [];
   private isMotionActive = false;
   private motionHandler: ((event: DeviceMotionEvent) => void) | null = null;
   private orientationHandler: ((event: DeviceOrientationEvent) => void) | null = null;
+  private headingHandler: ((event: GeolocationPosition) => void) | null = null;
 
-  async addListener(eventName: 'accel' | 'orientation', listenerFunc: any) {
+  async addListener(eventName: 'accel' | 'orientation' | 'heading', listenerFunc: any) {
     if (eventName === 'accel') {
       this.accelListeners.push(listenerFunc);
       await this.startAccelerometer();
+    } else if (eventName === 'heading') {
+      this.headingListeners.push(listenerFunc);
+      await this.startHeading();
     } else if (eventName === 'orientation') {
       this.orientationListeners.push(listenerFunc);
       await this.startOrientation();
@@ -114,6 +119,18 @@ export class MotionWeb extends WebPlugin implements MotionPlugin {
     };
 
     window.addEventListener('deviceorientation', this.orientationHandler);
+  }
+
+  private async startHeading() {
+    this.headingHandler = (event: GeolocationPosition) => {
+      const headingEvent = {
+        heading: event.coords.heading || 0,
+      };
+
+      this.headingListeners.forEach(listener => listener(headingEvent));
+    };
+
+    navigator.geolocation.watchPosition(this.headingHandler);
   }
 
   private stopAccelerometer() {

@@ -6,6 +6,7 @@ import Capacitor
     private let motionManager = CMMotionManager()
     private var isAccelActive = false
     private var isOrientationActive = false
+    private var isHeadingActive = false
     private var isDeviceMotionRunning = false
     private weak var plugin: CAPPlugin?
 
@@ -33,6 +34,7 @@ import Capacitor
         stopDeviceMotionIfNeeded()
         isAccelActive = false
         isOrientationActive = false
+        isHeadingActive = false
         call.resolve()
     }
 
@@ -47,6 +49,9 @@ import Capacitor
         case "orientation":
             self.startOrientationUpdates()
             call.resolve()
+        case "heading":
+            self.startHeadingUpdates()
+            call.resolve()
         default:
             print("[Motion.swift] addListener - Invalid event name: \(eventName)")
             call.reject("Invalid event name: \(eventName)")
@@ -59,6 +64,7 @@ import Capacitor
         stopDeviceMotionIfNeeded()
         isAccelActive = false
         isOrientationActive = false
+        isHeadingActive = false
         call.resolve()
     }
     
@@ -83,10 +89,21 @@ import Capacitor
         isOrientationActive = true
         startDeviceMotionIfNeeded()
     }
+
+    private func startHeadingUpdates() {
+        print("[Motion.swift] Attempting to start Heading updates. isHeadingActive: \(isHeadingActive)")
+        guard !isHeadingActive else {
+            print("[Motion.swift] Heading updates already active.")
+            return
+        }
+
+        isHeadingActive = true
+        startDeviceMotionIfNeeded()
+    }
     
     private func startDeviceMotionIfNeeded() {
         // Only start device motion if it's not already running and we have at least one listener
-        guard !isDeviceMotionRunning && (isAccelActive || isOrientationActive) else {
+        guard !isDeviceMotionRunning && (isAccelActive || isOrientationActive || isHeadingActive) else {
             print("[Motion.swift] Device motion already running or no active listeners")
             return
         }
@@ -99,14 +116,14 @@ import Capacitor
         print("[Motion.swift] Starting shared DeviceMotion updates.")
         isDeviceMotionRunning = true
         
-        motionManager.startDeviceMotionUpdates(to: OperationQueue.main) { [weak self] (motion, error) in
+        motionManager.startDeviceMotionUpdates(using: .xMagneticNorthZVertical, to: OperationQueue.main) { [weak self] (motion, error) in
             guard let strongSelf = self else { 
                 print("[Motion.swift] DeviceMotion - self is nil in closure")
                 return
             }
             
             // Check if we still have active listeners
-            guard strongSelf.isAccelActive || strongSelf.isOrientationActive else { 
+            guard strongSelf.isAccelActive || strongSelf.isOrientationActive || strongSelf.isHeadingActive else { 
                 print("[Motion.swift] DeviceMotion - no active listeners, stopping")
                 strongSelf.stopDeviceMotionIfNeeded()
                 return
@@ -171,6 +188,16 @@ import Capacitor
                 print("[Motion.swift] Orientation - Notifying listeners with data: \(orientationData)")
                 strongSelf.plugin?.notifyListeners("orientation", data: orientationData)
             }
+
+            if strongSelf.isHeadingActive {
+                let heading = motion.heading
+                let headingData: [String: Any] = [
+                    "heading": heading
+                ]
+                
+                print("[Motion.swift] Heading - Notifying listeners with data: \(headingData)")
+                strongSelf.plugin?.notifyListeners("heading", data: headingData)
+            }
         }
     }
     
@@ -181,7 +208,7 @@ import Capacitor
         }
         
         // Only stop if no listeners are active
-        guard !isAccelActive && !isOrientationActive else {
+        guard !isAccelActive && !isOrientationActive && !isHeadingActive else {
             print("[Motion.swift] Still have active listeners, not stopping device motion")
             return
         }
